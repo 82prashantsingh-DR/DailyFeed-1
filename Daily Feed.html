@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Morning Intelligence Briefing</title>
+    <style>
+        :root {
+            --bg-primary: #0a0f1d;
+            --bg-secondary: #131c32;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #1e293b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .welcome-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-screen p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .start-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+
+        .start-btn:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+        }
+
+        .dashboard {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        header .date {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 1024px) {
+            .grid-layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .market-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+
+        .badge-rangebound { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+
+        .img-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #1e293b;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-weight: 500;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .news-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .news-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .news-item:last-child { border-bottom: none; }
+
+        .news-title {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .news-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .actionable-box {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.1));
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .news-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-screen" id="welcomeScreen">
+        <h1>Alpha Intelligence Portal</h1>
+        <p>Your highly opinionated, domestic Indian market assessment and top-tier global news breakdown is ready for parsing.</p>
+        <button class="start-btn" onclick="launchDashboard()">Generate Intelligence Report</button>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <header>
+            <div>
+                <h2>Daily Intelligence Directive</h2>
+                <div class="date">May 21, 2026 | Session: Mid-Day Update</div>
+            </div>
+            <div style="text-align: right; color: var(--text-muted); font-size: 0.9rem;">Analyst Status: <span style="color: var(--accent-green)">● Online</span></div>
+        </header>
+
+        <div class="grid-layout">
+            <!-- Market Intelligence -->
+            <div class="card">
+                <h3>24-Hour Indian Market Assessment <span class="market-badge badge-rangebound">DEFENSIVE / RANGE-BOUND</span></h3>
+                <div class="img-placeholder" style="background-image: url('https://static.vecteezy.com/system/resources/previews/054/871/109/non_2x/green-up-bull-market-trend-rising-step-by-step-arrow-with-support-lines-in-transparent-chart-lines-template-for-business-forex-banner-background-vector.jpg')"></div>
+                <p><strong>The Core Dynamic:</strong> Indian indices staged an aggressive gap-up opening morning (Sensex hitting an intraday high of 75,945; Nifty striking 23,859) on the back of plunging global oil prices ($105/bbl) and a cooling VIX. However, buyers met heavy selling walls near the 23,800 psychological line. By mid-day, Nifty retraced significantly to 23,731.</p>
+                
+                <p><strong>The Structural Trap:</strong> Do not buy into the morning breakout hype. The Indian Rupee is suffering an extreme macro drag, languishing near historic lows at 96.86–96.95 against the USD. Persistent FII outflows (₹1,597 crore net sold yesterday) and spiking domestic 10-year G-Sec yields indicate the RBI is structurally locked out of cutting interest rates near-term.</p>
+                
+                <div class="actionable-box">
+                    <strong>Actionable Intelligence Strategy:</strong> This is an explicit "Buy on Dips, Sell on Gaps" structure compressed between Nifty 23,200 and 23,850. Treat morning gap-ups as strategic liquidating opportunities for high-beta midcaps and real estate positions. Rotate deployment into defense heavyweights (like BEL) or market leaders receiving massive DII support (such as IndiGo) on structural red days. Completely ignore irrational retail volume pumps in misidentified penny names (e.g., Parle Industries).
+                </div>
+            </div>
+
+            <!-- Macro Targets -->
+            <div class="card">
+                <h3>Key India Metrics</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px 0; color: var(--text-muted);">Nifty 50 Spot</td>
+                        <td style="padding: 10px 0; text-align: right; color: var(--accent-green); font-weight: bold;">23,731 (+0.30%)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px 0; color: var(--text-muted);">BSE Sensex</td>
+                        <td style="padding: 10px 0; text-align: right; color: var(--accent-green); font-weight: bold;">75,468 (+0.20%)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px 0; color: var(--text-muted);">USD-INR Rate</td>
+                        <td style="padding: 10px 0; text-align: right; color: var(--accent-red); font-weight: bold;">96.28 (Near Record Low)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px 0; color: var(--text-muted);">India VIX</td>
+                        <td style="padding: 10px 0; text-align: right; color: var(--accent-green); font-weight: bold;">18.10 (-4.2%)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; color: var(--text-muted);">FII Net Position</td>
+                        <td style="padding: 10px 0; text-align: right; color: var(--accent-red); font-weight: bold;">-₹1,597.35 Cr</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="news-grid">
+            <!-- World News Card -->
+            <div class="card">
+                <h3>Top 10 Global Developments</h3>
+                <div class="img-placeholder" style="background-image: url('https://news.az/photos/2025/12/1766409571.webp')"></div>
+                <ul class="news-list">
+                    <li class="news-item">
+                        <div class="news-title"><span>1. The Trump-Netanyahu Clash</span> <span style="color:var(--accent-red)">CRITICAL</span></div>
+                        <div class="news-desc">Tense phone call leaked; Netanyahu furious after Trump puts off planned military strikes on Iran under heavy pressure from Arab allies.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">2. Iran's Hidden Command</div>
+                        <div class="news-desc">Hard-line Gen. Ahmad Vahidi emerges at center of Iranian power structure, drafting a rigid stance for the Pakistan-mediated peace terms.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">3. Gulf of Oman Boarding</div>
+                        <div class="news-desc">US Marines board and inspect Iranian-flagged oil tanker under active blockade protocols, signaling immense execution risks to peace talks.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">4. Beijing Halts Pentagon Visit</div>
+                        <div class="news-desc">China blocks policy visit by Under-Secretary Colby, using it as leverage against a proposed $14B US arms deal for Taiwan.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">5. Raul Castro Indicted</div>
+                        <div class="news-desc">US Justice Dept files criminal charges over a 1996 civilian plane incident, aggressively raising geopolitical pressure on Cuba.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">6. UN Trims Global Growth</div>
+                        <div class="news-desc">Global 2026 expansion projections slashed to 2.5% due to persistent supply-chain friction and tight central bank policies.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">7. SoftBank Surges 20%</div>
+                        <div class="news-desc">Nvidia’s stellar earnings unleash massive institutional capital reallocation toward global artificial intelligence infrastructure proxies.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">8. Japan Export Machine Fires Up</div>
+                        <div class="news-desc">Nikkei rallies 3% on back of a 14.8% spike in exports, driven heavily by high-end semiconductor manufacturing equipment shipments.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">9. Samsung Strike Diverted</div>
+                        <div class="news-desc">Wage talks succeed in averting a massive memory-chip production freeze, providing relief to global technology supply lines.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">10. UK Inflation Watch</div>
+                        <div class="news-desc">European asset managers freeze positions ahead of today's CPI release, which will dictate the next move for regional interest rates.</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- India News Card -->
+            <div class="card">
+                <h3>Top 10 India Strategic News</h3>
+                <div class="img-placeholder" style="background-image: url('https://images.indianexpress.com/2023/10/Nirmala-Sitaraman-3col.jpg?w=1200')"></div>
+                <ul class="news-list">
+                    <li class="news-item">
+                        <div class="news-title"><span>1. Tamil Nadu Coalition Shift</span> <span style="color:var(--accent-green)">HISTORIC</span></div>
+                        <div class="news-desc">Congress officially joins the TVK-led government under CM Vijay, ending a 59-year streak of remaining completely outside TN state power.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">2. Cabinet Midterm Review</div>
+                        <div class="news-desc">PM Modi chairs mandatory all-ministry performance audit today. Underperforming sectors likely to face rapid leadership rotation.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">3. BPCL Exploits Russian Crude</div>
+                        <div class="news-desc">Bharat Petroleum ramps up Russian oil component to 41% of total imports to secure domestic margins against Middle East blockades.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">4. Secretary Marco Rubio Visit</div>
+                        <div class="news-desc">US Secretary of State schedules high-level trip to New Delhi starting May 23; bilateral talks focused strictly on Indian energy security.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">5. NEET-UG Intelligence Crackdown</div>
+                        <div class="news-desc">Education Ministry partners with central intelligence bodies to pre-emptively secure networks ahead of upcoming exam re-runs.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">6. Apollo Diagnostics Expansion</div>
+                        <div class="news-desc">Corporate guidance flags aggressive diagnostic rollout in Tier 2/3 cities as primary margin driver for upcoming fiscal cycle.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">7. Ola Electric Under Pressure</div>
+                        <div class="news-desc">Stock falls 5% as intensifying regulatory review on consumer complaints outpaces optimism around EV production extensions.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">8. Manipur Border Friction</div>
+                        <div class="news-desc">Naga women's apex group petitions PMO for security intervention regarding six hostages held by insurgent factions.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">9. CBI Escalation in Sharma Case</div>
+                        <div class="news-desc">Madhya Pradesh government formally passes Noida-based executive case to central bureaus following massive public transparency demands.</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-title">10. Retail Identity Confusion</div>
+                        <div class="news-desc">Parle Industries penny stock hits 5% upper circuit solely due to small-scale retail traders misidentifying it as the private maker of Melody candy.</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function launchDashboard() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

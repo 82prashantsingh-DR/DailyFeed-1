@@ -1,2 +1,2 @@
-# DailyFeed-1
-newone
+# DailyFeed
+For daily news on India and Global 

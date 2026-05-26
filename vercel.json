@@ -1,0 +1,21 @@
+{
+  "buildCommand": "npm install",
+  "devCommand": "npm run dev",
+  "framework": "express",
+  "functions": {
+    "api/**/*.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "env": [
+    {
+      "key": "NEWSAPI_KEY",
+      "value": "@NEWSAPI_KEY"
+    },
+    {
+      "key": "NODE_ENV",
+      "value": "production"
+    }
+  ]
+}

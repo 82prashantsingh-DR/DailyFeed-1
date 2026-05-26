@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  dailyfeed:
+    build: .
+    container_name: dailyfeed
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - NEWSAPI_KEY=${NEWSAPI_KEY}
+      - CACHE_TTL=300
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - dailyfeed-network
+
+networks:
+  dailyfeed-network:
+    driver: bridge
