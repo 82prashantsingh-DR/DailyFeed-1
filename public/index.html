@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyFeed - News Intelligence Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0a0f1d;
+            --bg-secondary: #131c32;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #1e293b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding: 30px 0;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .stat {
+            padding: 20px;
+            background-color: rgba(37, 99, 235, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .stat-change.positive {
+            color: var(--accent-green);
+        }
+
+        .stat-change.negative {
+            color: var(--accent-red);
+        }
+
+        .news-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s;
+        }
+
+        .news-item:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #60a5fa;
+        }
+
+        .news-title a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .news-title a:hover {
+            text-decoration: underline;
+        }
+
+        .news-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .news-source {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--accent-red);
+            padding: 15px;
+            border-radius: 8px;
+            color: var(--accent-red);
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--accent-green);
+            padding: 15px;
+            border-radius: 8px;
+            color: var(--accent-green);
+            margin-bottom: 20px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .grid { grid-template-columns: 1fr; }
+            .tabs { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📰 DailyFeed</h1>
+            <p>Live News Intelligence & Market Data Platform</p>
+            <p style="font-size: 0.9rem; margin-top: 10px;">
+                <span class="status-indicator"></span>
+                Live Updates
+            </p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('market')">📊 Market</button>
+            <button class="tab-btn" onclick="switchTab('india-news')">🇮🇳 India News</button>
+            <button class="tab-btn" onclick="switchTab('global-news')">🌍 Global News</button>
+            <button class="tab-btn" onclick="switchTab('search')">🔍 Search</button>
+        </div>
+
+        <!-- Market Tab -->
+        <div id="market" class="tab-content active">
+            <button class="btn" onclick="refreshMarket()">🔄 Refresh</button>
+            
+            <div id="market-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading market data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- India News Tab -->
+        <div id="india-news" class="tab-content">
+            <button class="btn" onclick="refreshIndiaNews()">🔄 Refresh</button>
+            
+            <div id="india-news-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading India news...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global News Tab -->
+        <div id="global-news" class="tab-content">
+            <button class="btn" onclick="refreshGlobalNews()">🔄 Refresh</button>
+            
+            <div id="global-news-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading global news...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Tab -->
+        <div id="search" class="tab-content">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search news..." />
+                <button class="btn" onclick="performSearch()">Search</button>
+            </div>
+            
+            <div id="search-content"></div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 DailyFeed - News Intelligence Platform</p>
+            <p style="font-size: 0.85rem; margin-top: 10px;">
+                API Status: <span id="api-status" style="color: var(--accent-green);">● Online</span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let autoRefreshInterval;
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Load content
+            if (tabName === 'market') refreshMarket();
+            if (tabName === 'india-news') refreshIndiaNews();
+            if (tabName === 'global-news') refreshGlobalNews();
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Format number with color
+        function formatChange(value) {
+            const color = value >= 0 ? 'positive' : 'negative';
+            const symbol = value >= 0 ? '+' : '';
+            return `<span class="stat-change ${color}">${symbol}${value.toFixed(2)}%</span>`;
+        }
+
+        // Display market data
+        async function refreshMarket() {
+            const content = document.getElementById('market-content');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading market data...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/market/dashboard`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    content.innerHTML = '<div class="error">Failed to load market data</div>';
+                    return;
+                }
+
+                let html = '';
+
+                // Indian Market
+                html += '<div class="card"><h3>📈 Indian Market</h3><div class="grid">';
+                for (const [key, index] of Object.entries(data.markets.india.indices)) {
+                    html += `
+                        <div class="stat">
+                            <div class="stat-label">${index.name}</div>
+                            <div class="stat-value">${index.value.toLocaleString()}</div>
+                            ${formatChange(index.changePercentage)}
+                        </div>
+                    `;
+                }
+                html += '</div></div>';
+
+                // Global Market
+                html += '<div class="card"><h3>🌍 Global Market</h3><div class="grid">';
+                for (const [key, index] of Object.entries(data.markets.global.indices)) {
+                    html += `
+                        <div class="stat">
+                            <div class="stat-label">${index.name}</div>
+                            <div class="stat-value">${index.value.toLocaleString()}</div>
+                            ${formatChange(index.changePercentage)}
+                        </div>
+                    `;
+                }
+                html += '</div></div>';
+
+                // Commodities
+                html += '<div class="card"><h3>⛽ Commodities</h3><div class="grid">';
+                for (const [key, commodity] of Object.entries(data.markets.commodities.commodities)) {
+                    html += `
+                        <div class="stat">
+                            <div class="stat-label">${commodity.name}</div>
+                            <div class="stat-value">${commodity.value}</div>
+                            ${formatChange(commodity.changePercentage)}
+                        </div>
+                    `;
+                }
+                html += '</div></div>';
+
+                // Crypto
+                html += '<div class="card"><h3>₿ Cryptocurrencies</h3><div class="grid">';
+                for (const [key, crypto] of Object.entries(data.markets.crypto.cryptocurrencies)) {
+                    html += `
+                        <div class="stat">
+                            <div class="stat-label">${crypto.name}</div>
+                            <div class="stat-value">${crypto.value}</div>
+                            ${formatChange(crypto.changePercentage)}
+                        </div>
+                    `;
+                }
+                html += '</div></div>';
+
+                content.innerHTML = html + '<div class="success">Last updated: ' + new Date().toLocaleTimeString() + '</div>';
+            } catch (error) {
+                content.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+
+        // Display India news
+        async function refreshIndiaNews() {
+            const content = document.getElementById('india-news-content');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading India news...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/news/india?pageSize=25`);
+                const data = await response.json();
+
+                if (!data.success || !data.articles || data.articles.length === 0) {
+                    content.innerHTML = '<div class="error">No news available</div>';
+                    return;
+                }
+
+                let html = '<div class="card"><h3>🇮🇳 Top India News</h3>';
+                data.articles.forEach(article => {
+                    html += `
+                        <div class="news-item">
+                            <div class="news-title">
+                                <a href="${article.url}" target="_blank">${article.title}</a>
+                            </div>
+                            <div class="news-desc">${article.description || 'No description available'}</div>
+                            <div class="news-meta">
+                                <span class="news-source">${article.source}</span>
+                                <span>${formatDate(article.publishedAt)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                content.innerHTML = html;
+            } catch (error) {
+                content.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+
+        // Display global news
+        async function refreshGlobalNews() {
+            const content = document.getElementById('global-news-content');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading global news...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/news/global?pageSize=25`);
+                const data = await response.json();
+
+                if (!data.success || !data.articles || data.articles.length === 0) {
+                    content.innerHTML = '<div class="error">No news available</div>';
+                    return;
+                }
+
+                let html = '<div class="card"><h3>🌍 Top Global News</h3>';
+                data.articles.forEach(article => {
+                    html += `
+                        <div class="news-item">
+                            <div class="news-title">
+                                <a href="${article.url}" target="_blank">${article.title}</a>
+                            </div>
+                            <div class="news-desc">${article.description || 'No description available'}</div>
+                            <div class="news-meta">
+                                <span class="news-source">${article.source}</span>
+                                <span>${formatDate(article.publishedAt)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                content.innerHTML = html;
+            } catch (error) {
+                content.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+
+        // Search news
+        async function performSearch() {
+            const query = document.getElementById('search-input').value;
+            if (!query.trim()) {
+                alert('Please enter a search term');
+                return;
+            }
+
+            const content = document.getElementById('search-content');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/news/search?query=${encodeURIComponent(query)}&pageSize=30`);
+                const data = await response.json();
+
+                if (!data.success || !data.articles || data.articles.length === 0) {
+                    content.innerHTML = '<div class="error">No results found for: ' + query + '</div>';
+                    return;
+                }
+
+                let html = '<div class="card"><h3>🔍 Search Results for: ' + query + '</h3>';
+                html += '<p style="color: var(--text-muted); margin-bottom: 15px;">Found ' + data.articles.length + ' articles</p>';
+                
+                data.articles.forEach(article => {
+                    html += `
+                        <div class="news-item">
+                            <div class="news-title">
+                                <a href="${article.url}" target="_blank">${article.title}</a>
+                            </div>
+                            <div class="news-desc">${article.description || 'No description available'}</div>
+                            <div class="news-meta">
+                                <span class="news-source">${article.source}</span>
+                                <span>${formatDate(article.publishedAt)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                content.innerHTML = html;
+            } catch (error) {
+                content.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+
+        // Check API health
+        async function checkAPIHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    document.getElementById('api-status').innerHTML = '● Online';
+                    document.getElementById('api-status').style.color = 'var(--accent-green)';
+                } else {
+                    document.getElementById('api-status').innerHTML = '● Offline';
+                    document.getElementById('api-status').style.color = 'var(--accent-red)';
+                }
+            } catch (error) {
+                document.getElementById('api-status').innerHTML = '● Error';
+                document.getElementById('api-status').style.color = 'var(--accent-red)';
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            checkAPIHealth();
+            refreshMarket();
+            
+            // Check API health every minute
+            setInterval(checkAPIHealth, 60000);
+        });
+
+        // Allow Enter key in search
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') performSearch();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
