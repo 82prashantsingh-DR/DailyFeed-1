@@ -4,7 +4,7 @@ const newsConfig = {
   // NewsAPI Configuration
   newsapi: {
     baseUrl: process.env.NEWSAPI_BASE_URL || 'https://newsapi.org',
-    apiKey: process.02032547366e4ca5b9479b817c68dbcd,
+    apiKey: 02032547366e4ca5b9479b817c68dbcd,
     timeout: 10000,
   },
 
