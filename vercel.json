@@ -11,7 +11,7 @@
   "env": [
     {
       "key": "NEWSAPI_KEY",
-      "value": "@NEWSAPI_KEY"
+      "value": "02032547366e4ca5b9479b817c68dbcd"
     },
     {
       "key": "NODE_ENV",
